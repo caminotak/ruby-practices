@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 require 'minitest/autorun'
-require_relative '../ls'
+require 'pathname'
+require_relative './ls'
 
 #LSコマンド、print_ls_no_optionメソッドを検証
 class LSTest < Minitest::Test
   def test_ls1
     path = '/Users/takunaka'
-    names_original = Dir.entries(path).sort[2..-1]
+    pathname = Pathname(path)
     display_columns = 3.0
 
     expected_output = <<~TEXT
@@ -21,7 +22,6 @@ class LSTest < Minitest::Test
       Gemfile.lock    Wine Files      tutor
       Library         bin             work
     TEXT
-
-    assert_equal expected_output, print_ls_no_option(names_original, display_columns)
+    assert_equal expected_output, print_ls_no_option(pathname, display_columns)
   end
 end
