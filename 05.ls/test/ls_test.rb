@@ -2,7 +2,7 @@
 
 require 'minitest/autorun'
 require 'pathname'
-require_relative './ls'
+require_relative '../lib/ls'
 
 #LSコマンド、print_ls_no_optionメソッドを検証
 class LSTest < Minitest::Test
