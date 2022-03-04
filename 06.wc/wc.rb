@@ -36,7 +36,9 @@ def word_count(files, pipeline)
 end
 
 if __FILE__ == $PROGRAM_NAME
-  if ARGV[0].nil? # 引数がない場合
+  if ARGV.length > 0 # 引数がある場合
+    files = ARGV
+  else # 引数がない場合
     pipeline = readlines.join
     if !pipeline.empty? # パイプライン入力がある場合
       files = []
@@ -45,8 +47,6 @@ if __FILE__ == $PROGRAM_NAME
       input = gets
       files = input.chomp.split
     end
-  else # 引数がある場合
-    files = ARGV
   end
-  word_count(files, pipeline)
+  word_count(files, pipeline) # 出力メソッド
 end
