@@ -36,7 +36,7 @@ def word_count(files)
       end
     end
 
-    if files[1]
+    if files.length > 1
       print total_lines.to_s.rjust(8).to_s
       puts option['l'] ? ' total' : "#{total_words.to_s.rjust(8)}#{total_bytes.to_s.rjust(8)} total"
     end
