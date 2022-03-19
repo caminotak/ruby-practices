@@ -5,15 +5,13 @@ require 'optparse'
 
 option = ARGV.getopts('l')
 
-# 出力用のメソッド
-def word_count(files, pipeline, option)
-  output = ''
-  total = { 'lines' => 0, 'words' => 0, 'bytes' => 0 }
-  if files.empty? # 引数がない場合（パイプラインから標準入力）
-    output = wc_pipeline(pipeline, option)
+# 出力用メソッド
+def word_count(files, string, option)
+  if files.empty? # 引数がない場合（パイプラインあるいは標準入力）
+    output = wc_string(string, option)
   else # 引数がある場合(引数 or getsから標準入力)
     output_files, total = wc_files(files, option)
-    output += output_files
+    output = output_files
   end
 
   if files.length > 1 # 複数の引数があった場合にtotalを表示する行
@@ -24,15 +22,17 @@ def word_count(files, pipeline, option)
   output
 end
 
-def wc_pipeline(pipeline, option)
+# 入力が文字列(標準入力、パイプライン)の場合のカウント
+def wc_string(string, option)
   output_lines = ''
-  lines = pipeline.count("\n")
-  words = pipeline.split(/\s+/).count # rubocopの指示によりreject(&:empty?).sizeより変更
-  bytes = pipeline.bytesize
+  lines = string.count("\n")
+  words = string.split(/\s+/).count # rubocopの指示によりreject(&:empty?).sizeより変更
+  bytes = string.bytesize
   output_lines += lines.to_s.rjust(8)
   output_lines += option['l'] ? "\n" : "#{words.to_s.rjust(8)}#{bytes.to_s.rjust(8)}\n"
 end
 
+# 入力がファイル名(引数)の場合のカウント
 def wc_files(files, option)
   output_files = ''
   total = { 'lines' => 0, 'words' => 0, 'bytes' => 0 }
@@ -51,15 +51,11 @@ def wc_files(files, option)
 end
 
 if __FILE__ == $PROGRAM_NAME
-  if ARGV.length.positive? # 引数がある場合
+  if ARGV.length.positive? # 引数にファイル名がある場合
     files = ARGV
-  elsif File.pipe?($stdin) # 引数がない場合
-    pipeline = readlines.join
+  else # 引数がない場合(パイプライン、標準入力からの文字列)
+    string = readlines.join
     files = []
-  else # パイプライン記述がない場合、入力待ちになりこの分岐へ進まない。。。
-    puts 'ファイル名を入力して下さい >>'
-    input = gets
-    files = input.chomp.split
   end
-  word_count(files, pipeline, option) # 出力メソッド
+  word_count(files, string, option) # 出力メソッド
 end
