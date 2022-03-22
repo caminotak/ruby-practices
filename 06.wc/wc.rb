@@ -20,7 +20,7 @@ def word_count(files, string, option)
   end
   puts output
   output
-end
+end # 出力用メソッドここまで
 
 # 入力が文字列(標準入力、パイプライン)の場合のカウント
 def wc_string(string, option)
